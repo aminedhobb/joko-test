@@ -35,7 +35,7 @@ class FormulaParser
       index = element_with_index.gsub(/[A-Z][a-z]|[A-Z]/ , '').to_i
       elements = ''
       index.times do
-        elements << element_with_index.gsub(/\d{1}/ , '')
+        elements << element_with_index.gsub(/\d+/ , '')
       end
       @formula.gsub!(element_with_index, elements)
     end
@@ -46,7 +46,7 @@ class FormulaParser
     return if scan.empty?
 
     scan.each do |element|
-      if @results[element.to_s].nil?
+      if @results[element.to_sym].nil?
         @results[element.to_sym] = 1
       else
         @results[element.to_sym] += 1

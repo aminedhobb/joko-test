@@ -1,9 +1,9 @@
 class FormulaParser
 
-  attr_reader :formula, :results
+  attr_reader :results
 
-  def initialize(input)
-    @formula = input
+  def initialize(formula)
+    @formula = formula
     @results = {}
     remove_brackets
     remove_numbers
@@ -30,8 +30,8 @@ class FormulaParser
 
   def remove_numbers
     pattern = /[A-Z]\d+|[A-Z][a-z]\d+/
-    scan = @formula.scan(pattern)
-    scan.each do |element_with_index|
+    scanned_formula = @formula.scan(pattern)
+    scanned_formula.each do |element_with_index|
       index = element_with_index.gsub(/[A-Z][a-z]|[A-Z]/ , '').to_i
       elements = ''
       index.times do
@@ -42,10 +42,10 @@ class FormulaParser
   end
 
   def count_two_letters_elements
-    scan = @formula.scan(/[A-Z][a-z]/)
-    return if scan.empty?
+    scanned_formula = @formula.scan(/[A-Z][a-z]/)
+    return if scanned_formula.empty?
 
-    scan.each do |element|
+    scanned_formula.each do |element|
       if @results[element.to_sym].nil?
         @results[element.to_sym] = 1
       else

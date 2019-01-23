@@ -1,6 +1,6 @@
 class FormulaParser
 
-  attr_reader :formula, :results
+  attr_reader :results
 
   def initialize(input)
     @formula = input
@@ -19,10 +19,10 @@ class FormulaParser
     pattern_without_index = /\(#{non_delimiters}\)|\{#{non_delimiters}\}|\[#{non_delimiters}\]/
 
     while @formula =~ pattern_with_index
-      index = formula.scan(pattern_with_index)[0].split('').last.to_i
+      index = @formula.scan(pattern_with_index)[0].split('').last.to_i
       replacement_string = ''
       index.times do
-        replacement_string << formula.scan(pattern_without_index)[0].gsub(/\(|\)|\[|\]|\{|\}/, '')
+        replacement_string << @formula.scan(pattern_without_index)[0].gsub(/\(|\)|\[|\]|\{|\}/, '')
       end
       @formula.gsub!(pattern_with_index, replacement_string)
     end

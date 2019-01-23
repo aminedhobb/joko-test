@@ -1,6 +1,6 @@
 class FormulaParser
 
-  attr_reader :results
+  attr_reader :formula, :results
 
   def initialize(input)
     @formula = input
@@ -15,11 +15,11 @@ class FormulaParser
 
   def remove_brackets
     non_delimiters = /[^(){}\[\]]*/
-    pattern_with_index = /\(#{non_delimiters}\)\d{1}|\{#{non_delimiters}\}\d{1}|\[#{non_delimiters}\]\d{1}/
+    pattern_with_index = /\(#{non_delimiters}\)\d+|\{#{non_delimiters}\}\d+|\[#{non_delimiters}\]\d+/
     pattern_without_index = /\(#{non_delimiters}\)|\{#{non_delimiters}\}|\[#{non_delimiters}\]/
 
     while @formula =~ pattern_with_index
-      index = @formula.scan(pattern_with_index)[0].split('').last.to_i
+      index = @formula.scan(pattern_with_index)[0].gsub(/\(\w+\)|\[\w+\]|\{\w+\}/, '').to_i
       replacement_string = ''
       index.times do
         replacement_string << @formula.scan(pattern_without_index)[0].gsub(/\(|\)|\[|\]|\{|\}/, '')
@@ -29,10 +29,10 @@ class FormulaParser
   end
 
   def remove_numbers
-    pattern = /[A-Z]\d{1}|[A-Z][a-z]\d{1}/
+    pattern = /[A-Z]\d+|[A-Z][a-z]\d+/
     scan = @formula.scan(pattern)
     scan.each do |element_with_index|
-      index = element_with_index.split('').last.to_i
+      index = element_with_index.gsub(/[A-Z][a-z]|[A-Z]/ , '').to_i
       elements = ''
       index.times do
         elements << element_with_index.gsub(/\d{1}/ , '')
@@ -46,7 +46,7 @@ class FormulaParser
     return if scan.empty?
 
     scan.each do |element|
-      if @results[element.to_sym].nil?
+      if @results[element.to_s].nil?
         @results[element.to_sym] = 1
       else
         @results[element.to_sym] += 1
